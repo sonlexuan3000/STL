@@ -17,9 +17,12 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     endif()
 endif()
 
-# mini_stl_add_test(<name> <source> [STAGE_MACRO <macro> STAGE <n>])
+# mini_stl_add_test(<name> <source> [CXX17] [STAGE_MACRO <macro> STAGE <n>])
+#
+# CXX17 builds the test as C++17 instead of the library's C++20, for components
+# that must also compile on C++17-only online judges.
 function(mini_stl_add_test name source)
-    cmake_parse_arguments(ARG "" "STAGE_MACRO;STAGE" "" ${ARGN})
+    cmake_parse_arguments(ARG "CXX17" "STAGE_MACRO;STAGE" "" ${ARGN})
 
     if(DEFINED ARG_STAGE AND ARG_STAGE EQUAL 0)
         message(STATUS "mini_stl: ${name} disabled (stage 0)")
@@ -27,13 +30,23 @@ function(mini_stl_add_test name source)
     endif()
 
     add_executable(${name} ${source})
-    target_link_libraries(${name} PRIVATE mini::stl mini_stl_test_options)
+    target_link_libraries(${name} PRIVATE mini_stl_test_options)
+
+    if(ARG_CXX17)
+        # Not linked to mini::stl, whose cxx_std_20 requirement would win.
+        target_include_directories(${name} PRIVATE "${PROJECT_SOURCE_DIR}/include")
+        set_target_properties(${name} PROPERTIES
+            CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)
+    else()
+        target_link_libraries(${name} PRIVATE mini::stl)
+    endif()
 
     if(DEFINED ARG_STAGE_MACRO)
         target_compile_definitions(${name} PRIVATE ${ARG_STAGE_MACRO}=${ARG_STAGE})
     endif()
 
     add_test(NAME ${name} COMMAND ${name})
+    set_tests_properties(${name} PROPERTIES TIMEOUT 60)
 endfunction()
 
 mini_stl_add_test(vector_tests vector_tests.cpp)
@@ -46,6 +59,17 @@ mini_stl_add_test(ring_deque_tests ring_deque_tests.cpp
 
 mini_stl_add_test(flat_hash_map_tests flat_hash_map_tests.cpp
     STAGE_MACRO MINI_FLAT_HASH_MAP_STAGE STAGE ${MINI_FLAT_HASH_MAP_STAGE})
+
+mini_stl_add_test(hash_map_tests hash_map_tests.cpp CXX17
+    STAGE_MACRO MINI_HASH_MAP_STAGE STAGE ${MINI_HASH_MAP_STAGE})
+
+# mini::HashMap must stay submittable to the WhiteBox judge (C++17, no
+# standard container names anywhere in the class).
+add_library(hash_map_whitebox_check OBJECT hash_map_whitebox_check.cpp)
+target_include_directories(hash_map_whitebox_check PRIVATE "${PROJECT_SOURCE_DIR}/include")
+target_link_libraries(hash_map_whitebox_check PRIVATE mini_stl_test_options)
+set_target_properties(hash_map_whitebox_check PROPERTIES
+    CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)
 
 # Every public header must compile on its own (no hidden include-order deps).
 file(GLOB MINI_STL_HEADERS CONFIGURE_DEPENDS
