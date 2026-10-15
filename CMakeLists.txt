@@ -25,6 +25,7 @@ option(MINI_STL_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 set(MINI_LIST_STAGE          3 CACHE STRING "Highest mini::List test stage to build (0-4)")
 set(MINI_RING_DEQUE_STAGE    2 CACHE STRING "Highest mini::RingDeque test stage to build (0-3)")
 set(MINI_FLAT_HASH_MAP_STAGE 0 CACHE STRING "Highest mini::FlatHashMap test stage to build (0-3)")
+set(MINI_HASH_MAP_STAGE      0 CACHE STRING "Highest mini::HashMap test stage to build (0-2)")
 
 if(MINI_STL_BUILD_TESTS)
     enable_testing()
