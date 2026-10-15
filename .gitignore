@@ -1,0 +1,18 @@
+# Build output
+build/
+cmake-build-*/
+out/
+compile_commands.json
+
+# Compiled binaries
+*.o
+*.out
+*_tests
+!tests/
+
+# Tooling
+.cache/
+.vscode/
+.idea/
+*.dSYM/
+.DS_Store
