@@ -26,7 +26,7 @@ public:
 
     // Checkpoint 1: insert, lookup, erase, and growth.
     HashMap() noexcept
-    : bucket_count_{1}, size_{0}, buckets_{nullptr}
+    : buckets_{nullptr}, bucket_count_{1}, size_{0}
     {
         buckets_ = new Node*[bucket_count_]{nullptr};
     }
@@ -45,7 +45,7 @@ public:
             return false;
         }
         if (size_ + 1 > bucket_count_) {
-            reserve(std::max(8uz, bucket_count_ * 2));
+            reserve(std::max<std::size_t>(static_cast<std::size_t>(8), bucket_count_ * 2));
         }
         size_++;
         std::size_t hash = Hash{}(key);
@@ -142,7 +142,7 @@ public:
     }
 
     void clear() noexcept {
-        for (int i = 0; i < bucket_count_; ++i) {
+        for (std::size_t i = 0; i < bucket_count_; ++i) {
             Node* head = buckets_[i];
             buckets_[i] = nullptr;
             while (head != nullptr) {
@@ -167,7 +167,7 @@ public:
     void reserve(size_type count) {
         if (bucket_count() >= count) return;
         Node** new_buckets = new Node*[count]{nullptr};
-        for (int i = 0; i < bucket_count_; i++) {
+        for (std::size_t i = 0; i < bucket_count_; i++) {
             Node* head = buckets_[i];
             while (head != nullptr) {
                 Node* next = head -> next;
