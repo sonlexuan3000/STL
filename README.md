@@ -21,7 +21,7 @@ sequences checked against the `std` equivalent.
 | `mini::List<T>` | [`list.hpp`](include/mini/list.hpp) | Stages 1–3 | Sentinel-based doubly linked list, bidirectional iterator. Stage 4 (exception safety) in progress — [spec](docs/list.md) |
 | `mini::RingDeque<T>` | [`ring_deque.hpp`](include/mini/ring_deque.hpp) | Stages 1–2 | Growable circular buffer. Stage 3 (copy/move/swap) in progress — [spec](docs/ring_deque.md) |
 | `mini::FlatHashMap<K, V>` | [`flat_hash_map.hpp`](include/mini/flat_hash_map.hpp) | In progress | Open addressing, linear probing, tombstones — [spec](docs/flat_hash_map.md) |
-| `mini::HashMap<K, V>` | [`hash_map.hpp`](include/mini/hash_map.hpp) | In progress | Node-based, stable references like `std::unordered_map` — [spec](docs/hash_map.md) |
+| `mini::HashMap<K, V>` | [`hash_map.hpp`](include/mini/hash_map.hpp) | Done | Separate chaining with cached hashes; references stay valid across rehashes like `std::unordered_map` — [spec](docs/hash_map.md) |
 | `mini::Optional<T>` | [`optional.hpp`](include/mini/optional.hpp) | Done | In-place aligned storage |
 | `mini::UniquePtr<T>` | [`unique_ptr.hpp`](include/mini/unique_ptr.hpp) | Done | Move-only ownership, `make_unique` |
 | `mini::move` / `mini::forward` | [`move.hpp`](include/mini/move.hpp), [`forward.hpp`](include/mini/forward.hpp) | Done | Hand-written reference-collapsing utilities |
@@ -52,7 +52,7 @@ cmake --preset dev -DMINI_RING_DEQUE_STAGE=3
 | `MINI_LIST_STAGE` | `3` |
 | `MINI_RING_DEQUE_STAGE` | `2` |
 | `MINI_FLAT_HASH_MAP_STAGE` | `0` (disabled) |
-| `MINI_HASH_MAP_STAGE` | `0` (disabled) |
+| `MINI_HASH_MAP_STAGE` | `2` |
 | `MINI_STL_SANITIZERS` | `ON` |
 | `MINI_STL_WARNINGS_AS_ERRORS` | `OFF` |
 
