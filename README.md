@@ -20,6 +20,7 @@ sequences checked against the `std` equivalent.
 | `mini::Vector<T>` | [`vector.hpp`](include/mini/vector.hpp) | Done | Strong exception guarantee for copy-assign, `reserve`, `push_back`, `emplace_back`; aliasing-safe growth |
 | `mini::List<T>` | [`list.hpp`](include/mini/list.hpp) | Stages 1–3 | Sentinel-based doubly linked list, bidirectional iterator. Stage 4 (exception safety) in progress — [spec](docs/list.md) |
 | `mini::RingDeque<T>` | [`ring_deque.hpp`](include/mini/ring_deque.hpp) | Done | Growable circular buffer with copy/move/swap value semantics — [spec](docs/ring_deque.md) |
+| `mini::PriorityQueue<T, Container, Compare>` | [`priority_queue.hpp`](include/mini/priority_queue.hpp) | Done | Binary heap over `mini::Vector` by default, with custom comparators and linear-time heap construction — [spec](docs/priority_queue.md) |
 | `mini::FlatHashMap<K, V>` | [`flat_hash_map.hpp`](include/mini/flat_hash_map.hpp) | In progress | Open addressing, linear probing, tombstones — [spec](docs/flat_hash_map.md) |
 | `mini::HashMap<K, V>` | [`hash_map.hpp`](include/mini/hash_map.hpp) | Done | Separate chaining with cached hashes; references stay valid across rehashes like `std::unordered_map` — [spec](docs/hash_map.md) |
 | `mini::Optional<T>` | [`optional.hpp`](include/mini/optional.hpp) | Done | In-place aligned storage |
@@ -51,6 +52,7 @@ cmake --preset dev -DMINI_RING_DEQUE_STAGE=3
 |---|---|
 | `MINI_LIST_STAGE` | `3` |
 | `MINI_RING_DEQUE_STAGE` | `3` |
+| `MINI_PRIORITY_QUEUE_STAGE` | `3` |
 | `MINI_FLAT_HASH_MAP_STAGE` | `0` (disabled) |
 | `MINI_HASH_MAP_STAGE` | `2` |
 | `MINI_STL_SANITIZERS` | `ON` |
