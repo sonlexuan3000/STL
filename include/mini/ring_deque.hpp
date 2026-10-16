@@ -115,12 +115,14 @@ public:
         head_++;
         head_ %= capacity_;
         size_--;
+        if (size_ == 0) head_ = 0;
     }
 
     void pop_back() {
         assert(!empty());
         back().~T();
         size_--;
+        if (size_ == 0) head_ = 0;
     }
 
     void clear() noexcept {
@@ -139,36 +141,20 @@ public:
     RingDeque(const RingDeque& other) 
     : RingDeque{}
     {
-        for (int i = 0; i < other.size(); i++) {
-            push_back(other[i]);
-        }
-    }
-
-    RingDeque& operator=(const RingDeque& other) {
-        clear();
-        for (int i = 0; i < other.size(); i++) {
+        for (std::size_t i = 0; i < other.size(); i++) {
             push_back(other[i]);
         }
     }
 
     RingDeque(RingDeque&& other) noexcept
-    : RingDeque{}
     {
-        data_ = other.data_;
-        std::swap(head_, other.head_);
-        std::swap(size_, other.size_);
-        std::swap(capacity_, other.capacity_);
-        other.data_ = nullptr;
+        swap(other);
     }
 
-    RingDeque& operator=(RingDeque&& other) noexcept 
+    RingDeque& operator=(RingDeque other) noexcept
     {
-        clear();
-        data_ = other.data_;
-        std::swap(head_, other.head_);
-        std::swap(size_, other.size_);
-        std::swap(capacity_, other.capacity_);
-        other.data_ = nullptr;
+        swap(other);
+        return *this;
     }
 
     void swap(RingDeque& other) noexcept {
@@ -199,6 +185,9 @@ private:
     }
 
     static T* allocate_raw(size_type capacity) {
+        if (capacity == 0) {
+            return nullptr;
+        }
         void* raw = ::operator new(sizeof(T) * capacity, std::align_val_t(alignof(T)));
         T* data = static_cast<T*>(raw);
         return data;
@@ -219,7 +208,7 @@ private:
     void reallocate(size_type new_capacity) {
         if (new_capacity <= capacity_) return;
         T* new_data = allocate_raw(new_capacity);
-        for (int i = 0; i < size_; i++) {
+        for (std::size_t i = 0; i < size_; i++) {
             ::new (new_data + i) T(std::move(data_[physical_index(i)]));
             data_[physical_index(i)].~T();
         }
