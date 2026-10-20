@@ -56,6 +56,23 @@ public:
         std::swap(control_, other.control_);
     }
 
+    template <class U>
+    requires std::is_convertible_v<U*, T*>
+    SharedPtr(const SharedPtr<U>& other) noexcept
+    : pointer_{other.pointer_}, control_{other.control_}
+    {
+        if (control_ != nullptr) ++control_->strong_count;
+    }
+
+    template <class U>
+    requires std::is_convertible_v<U*, T*>
+    SharedPtr(SharedPtr<U>&& other) noexcept
+    : pointer_{other.pointer_}, control_{other.control_}
+    {
+        other.pointer_ = nullptr;
+        other.control_ = nullptr;
+    }
+
     SharedPtr& operator=(SharedPtr other) noexcept {
         swap(other);
         return *this;
@@ -95,6 +112,9 @@ public:
     }
 
 private:
+    template <class>
+    friend class SharedPtr;
+
     void release() noexcept {
         if (control_ == nullptr) return;
         control_ -> strong_count--;

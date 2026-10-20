@@ -9,8 +9,8 @@
 #define MINI_SHARED_PTR_STAGE 1
 #endif
 
-static_assert(MINI_SHARED_PTR_STAGE == 1,
-              "MINI_SHARED_PTR_STAGE must be 1");
+static_assert(MINI_SHARED_PTR_STAGE >= 1 && MINI_SHARED_PTR_STAGE <= 2,
+              "MINI_SHARED_PTR_STAGE must be between 1 and 2");
 
 #define CHECK(condition)                                                      \
     do {                                                                      \
@@ -59,11 +59,50 @@ struct Derived : Base {
     int derived_value = 11;
 };
 
+struct LeftBase {
+    static inline int destroyed = 0;
+
+    ~LeftBase() {
+        ++destroyed;
+    }
+
+    int left_value = 13;
+};
+
+struct RightBase {
+    static inline int destroyed = 0;
+
+    ~RightBase() {
+        ++destroyed;
+    }
+
+    int right_value = 17;
+};
+
+struct MultiplyDerived : LeftBase, RightBase {
+    static inline int destroyed = 0;
+
+    ~MultiplyDerived() {
+        ++destroyed;
+    }
+};
+
 static_assert(std::is_same_v<mini::SharedPtr<int>::element_type, int>);
 static_assert(std::is_constructible_v<mini::SharedPtr<Base>, Derived*>);
 static_assert(!std::is_constructible_v<mini::SharedPtr<Derived>, Base*>);
 static_assert(!std::is_constructible_v<mini::SharedPtr<int>, double*>);
 static_assert(!std::has_virtual_destructor_v<Base>);
+
+#if MINI_SHARED_PTR_STAGE >= 2
+static_assert(std::is_constructible_v<
+              mini::SharedPtr<Base>, const mini::SharedPtr<Derived>&>);
+static_assert(std::is_constructible_v<
+              mini::SharedPtr<Base>, mini::SharedPtr<Derived>&&>);
+static_assert(!std::is_constructible_v<
+              mini::SharedPtr<Derived>, const mini::SharedPtr<Base>&>);
+static_assert(std::is_assignable_v<
+              mini::SharedPtr<Base>&, const mini::SharedPtr<Derived>&>);
+#endif
 
 void reset_tracked_counts() {
     CHECK(Tracked::alive == 0);
@@ -216,6 +255,97 @@ void test_type_erased_deletion() {
     CHECK(Base::destroyed == 1);
 }
 
+#if MINI_SHARED_PTR_STAGE >= 2
+void test_converting_copy_and_assignment() {
+    std::cout << "[stage 2] converting copy and assignment\n";
+    Base::destroyed = 0;
+    Derived::destroyed = 0;
+
+    {
+        mini::SharedPtr<Derived> derived(new Derived);
+        Derived* const original = derived.get();
+
+        mini::SharedPtr<Base> base(derived);
+        CHECK(base.get() == static_cast<Base*>(original));
+        CHECK(derived.use_count() == 2);
+        CHECK(base.use_count() == 2);
+
+        mini::SharedPtr<Base> assigned;
+        assigned = derived;
+        CHECK(assigned.get() == static_cast<Base*>(original));
+        CHECK(derived.use_count() == 3);
+
+        derived.reset();
+        CHECK(base.use_count() == 2);
+        CHECK(Derived::destroyed == 0);
+        CHECK(Base::destroyed == 0);
+
+        assigned.reset();
+        CHECK(base.use_count() == 1);
+    }
+
+    CHECK(Derived::destroyed == 1);
+    CHECK(Base::destroyed == 1);
+
+    mini::SharedPtr<Derived> empty;
+    mini::SharedPtr<Base> empty_copy(empty);
+    CHECK(!empty_copy);
+    CHECK(empty_copy.use_count() == 0);
+
+    Derived* null_pointer = nullptr;
+    mini::SharedPtr<Derived> null_owner(null_pointer);
+    mini::SharedPtr<Base> null_copy(null_owner);
+    CHECK(!null_copy);
+    CHECK(null_owner.use_count() == 2);
+    CHECK(null_copy.use_count() == 2);
+}
+
+void test_converting_move_and_pointer_adjustment() {
+    std::cout << "[stage 2] converting move and pointer adjustment\n";
+    LeftBase::destroyed = 0;
+    RightBase::destroyed = 0;
+    MultiplyDerived::destroyed = 0;
+
+    {
+        auto* const original = new MultiplyDerived;
+        RightBase* const adjusted = static_cast<RightBase*>(original);
+        mini::SharedPtr<MultiplyDerived> source(original);
+
+        mini::SharedPtr<RightBase> right(std::move(source));
+        CHECK(!source);
+        CHECK(source.use_count() == 0);
+        CHECK(right.get() == adjusted);
+        CHECK(right->right_value == 17);
+        CHECK(right.use_count() == 1);
+    }
+
+    CHECK(MultiplyDerived::destroyed == 1);
+    CHECK(LeftBase::destroyed == 1);
+    CHECK(RightBase::destroyed == 1);
+
+    LeftBase::destroyed = 0;
+    RightBase::destroyed = 0;
+    MultiplyDerived::destroyed = 0;
+
+    {
+        auto* const original = new MultiplyDerived;
+        RightBase* const adjusted = static_cast<RightBase*>(original);
+        mini::SharedPtr<MultiplyDerived> source(original);
+        mini::SharedPtr<RightBase> destination(new RightBase);
+
+        destination = std::move(source);
+        CHECK(!source);
+        CHECK(destination.get() == adjusted);
+        CHECK(destination.use_count() == 1);
+        CHECK(RightBase::destroyed == 1);
+    }
+
+    CHECK(MultiplyDerived::destroyed == 1);
+    CHECK(LeftBase::destroyed == 1);
+    CHECK(RightBase::destroyed == 2);
+}
+#endif
+
 } // namespace
 
 int main() {
@@ -223,6 +353,10 @@ int main() {
     test_value_semantics_and_lifetime();
     test_swap();
     test_type_erased_deletion();
+#if MINI_SHARED_PTR_STAGE >= 2
+    test_converting_copy_and_assignment();
+    test_converting_move_and_pointer_adjustment();
+#endif
 
     std::cout << "All enabled mini::SharedPtr tests passed (stage "
               << MINI_SHARED_PTR_STAGE << ")\n";
