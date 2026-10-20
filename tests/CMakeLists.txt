@@ -60,6 +60,9 @@ mini_stl_add_test(ring_deque_tests ring_deque_tests.cpp
 mini_stl_add_test(priority_queue_tests priority_queue_tests.cpp
     STAGE_MACRO MINI_PRIORITY_QUEUE_STAGE STAGE ${MINI_PRIORITY_QUEUE_STAGE})
 
+mini_stl_add_test(shared_ptr_tests shared_ptr_tests.cpp
+    STAGE_MACRO MINI_SHARED_PTR_STAGE STAGE ${MINI_SHARED_PTR_STAGE})
+
 mini_stl_add_test(flat_hash_map_tests flat_hash_map_tests.cpp
     STAGE_MACRO MINI_FLAT_HASH_MAP_STAGE STAGE ${MINI_FLAT_HASH_MAP_STAGE})
 
