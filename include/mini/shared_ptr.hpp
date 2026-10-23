@@ -3,13 +3,14 @@
 #include <cstddef>
 #include <type_traits>
 #include <utility>
+#include <atomic>
 
 namespace mini {
 
 namespace detail {
 
 struct ControlBlockBase {
-    std::size_t strong_count = 1;
+    std::atomic<std::size_t> strong_count{1};
 
     virtual void destroy_object() noexcept = 0;
     virtual ~ControlBlockBase() = default;
@@ -48,7 +49,7 @@ public:
     SharedPtr(const SharedPtr& other) noexcept
     : pointer_{other.pointer_}, control_{other.control_}
     {
-        if (control_ != nullptr) control_->strong_count++;
+        if (control_ != nullptr) control_->strong_count.fetch_add(1, std::memory_order_relaxed);
     }
 
     SharedPtr(SharedPtr&& other) noexcept {
@@ -61,7 +62,7 @@ public:
     SharedPtr(const SharedPtr<U>& other) noexcept
     : pointer_{other.pointer_}, control_{other.control_}
     {
-        if (control_ != nullptr) ++control_->strong_count;
+        if (control_ != nullptr) control_->strong_count.fetch_add(1, std::memory_order_relaxed);
     }
 
     template <class U>
@@ -87,7 +88,7 @@ public:
     }
 
     [[nodiscard]] std::size_t use_count() const noexcept {
-        return (control_ == nullptr ? 0 : control_->strong_count);
+        return (control_ == nullptr ? 0 : control_->strong_count.load(std::memory_order_relaxed));
     }
 
     [[nodiscard]] explicit operator bool() const noexcept {
@@ -117,8 +118,7 @@ private:
 
     void release() noexcept {
         if (control_ == nullptr) return;
-        control_ -> strong_count--;
-        if (control_ -> strong_count == 0) {
+        if (control_ -> strong_count.fetch_sub(1, std::memory_order_acq_rel) == 1) {
             control_->destroy_object();
             delete control_;
         }
