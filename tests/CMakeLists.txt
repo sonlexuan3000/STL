@@ -63,6 +63,20 @@ mini_stl_add_test(priority_queue_tests priority_queue_tests.cpp
 mini_stl_add_test(shared_ptr_tests shared_ptr_tests.cpp
     STAGE_MACRO MINI_SHARED_PTR_STAGE STAGE ${MINI_SHARED_PTR_STAGE})
 
+if(TARGET shared_ptr_tests)
+    target_link_libraries(shared_ptr_tests PRIVATE Threads::Threads)
+endif()
+
+mini_stl_add_test(shared_ptr_exception_tests shared_ptr_exception_tests.cpp
+    STAGE_MACRO MINI_SHARED_PTR_STAGE STAGE ${MINI_SHARED_PTR_STAGE})
+
+mini_stl_add_test(weak_ptr_tests weak_ptr_tests.cpp
+    STAGE_MACRO MINI_WEAK_PTR_STAGE STAGE ${MINI_WEAK_PTR_STAGE})
+
+if(TARGET weak_ptr_tests)
+    target_link_libraries(weak_ptr_tests PRIVATE Threads::Threads)
+endif()
+
 mini_stl_add_test(flat_hash_map_tests flat_hash_map_tests.cpp
     STAGE_MACRO MINI_FLAT_HASH_MAP_STAGE STAGE ${MINI_FLAT_HASH_MAP_STAGE})
 

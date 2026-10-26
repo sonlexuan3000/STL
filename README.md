@@ -25,7 +25,8 @@ sequences checked against the `std` equivalent.
 | `mini::HashMap<K, V>` | [`hash_map.hpp`](include/mini/hash_map.hpp) | Done | Separate chaining with cached hashes; references stay valid across rehashes like `std::unordered_map` — [spec](docs/hash_map.md) |
 | `mini::Optional<T>` | [`optional.hpp`](include/mini/optional.hpp) | Done | In-place aligned storage |
 | `mini::UniquePtr<T>` | [`unique_ptr.hpp`](include/mini/unique_ptr.hpp) | Done | Move-only ownership, `make_unique` |
-| `mini::SharedPtr<T>` | [`shared_ptr.hpp`](include/mini/shared_ptr.hpp) | Stage 2 | Type-erased control block, single-threaded shared ownership, and converting ownership |
+| `mini::SharedPtr<T>` | [`shared_ptr.hpp`](include/mini/shared_ptr.hpp) | Stage 9 | Atomic ownership, `make_shared`, aliasing ownership, pointer casts, and custom deleters — [spec and backlog](docs/shared_ptr.md) |
+| `mini::WeakPtr<T>` | [`weak_ptr.hpp`](include/mini/weak_ptr.hpp) | Stage 4 | Non-owning observation, converting views, and atomic promotion — [spec](docs/weak_ptr.md) |
 | `mini::move` / `mini::forward` | [`move.hpp`](include/mini/move.hpp), [`forward.hpp`](include/mini/forward.hpp) | Done | Hand-written reference-collapsing utilities |
 
 ## Building and testing
@@ -54,7 +55,8 @@ cmake --preset dev -DMINI_RING_DEQUE_STAGE=3
 | `MINI_LIST_STAGE` | `3` |
 | `MINI_RING_DEQUE_STAGE` | `3` |
 | `MINI_PRIORITY_QUEUE_STAGE` | `3` |
-| `MINI_SHARED_PTR_STAGE` | `2` |
+| `MINI_SHARED_PTR_STAGE` | `9` |
+| `MINI_WEAK_PTR_STAGE` | `4` |
 | `MINI_FLAT_HASH_MAP_STAGE` | `0` (disabled) |
 | `MINI_HASH_MAP_STAGE` | `2` |
 | `MINI_STL_SANITIZERS` | `ON` |
