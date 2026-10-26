@@ -77,6 +77,9 @@ if(TARGET weak_ptr_tests)
     target_link_libraries(weak_ptr_tests PRIVATE Threads::Threads)
 endif()
 
+mini_stl_add_test(function_tests function_tests.cpp
+    STAGE_MACRO MINI_FUNCTION_STAGE STAGE ${MINI_FUNCTION_STAGE})
+
 mini_stl_add_test(flat_hash_map_tests flat_hash_map_tests.cpp
     STAGE_MACRO MINI_FLAT_HASH_MAP_STAGE STAGE ${MINI_FLAT_HASH_MAP_STAGE})
 
