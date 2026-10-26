@@ -28,6 +28,7 @@ set(MINI_PRIORITY_QUEUE_STAGE 3 CACHE STRING "Highest mini::PriorityQueue test s
 set(MINI_SHARED_PTR_STAGE    9 CACHE STRING "Highest mini::SharedPtr test stage to build (0-9)")
 set(MINI_WEAK_PTR_STAGE      4 CACHE STRING "Highest mini::WeakPtr test stage to build (0-4)")
 set(MINI_FUNCTION_STAGE      2 CACHE STRING "Highest mini::Function test stage to build (0-4)")
+set(MINI_SPSC_QUEUE_STAGE    1 CACHE STRING "Highest mini::SpscQueue test stage to build (0-1)")
 set(MINI_FLAT_HASH_MAP_STAGE 0 CACHE STRING "Highest mini::FlatHashMap test stage to build (0-3)")
 set(MINI_HASH_MAP_STAGE      2 CACHE STRING "Highest mini::HashMap test stage to build (0-2)")
 

@@ -28,6 +28,7 @@ sequences checked against the `std` equivalent.
 | `mini::SharedPtr<T>` | [`shared_ptr.hpp`](include/mini/shared_ptr.hpp) | Stage 9 | Atomic ownership, `make_shared`, aliasing ownership, pointer casts, and custom deleters — [spec and backlog](docs/shared_ptr.md) |
 | `mini::WeakPtr<T>` | [`weak_ptr.hpp`](include/mini/weak_ptr.hpp) | Stage 4 | Non-owning observation, converting views, and atomic promotion — [spec](docs/weak_ptr.md) |
 | `mini::Function<R(Args...)>` | [`function.hpp`](include/mini/function.hpp) | Stage 2 | Heap-backed callable type erasure with copy/move value semantics — [spec](docs/function.md) |
+| `mini::SpscQueue<T, Capacity>` | [`spsc_queue.hpp`](include/mini/spsc_queue.hpp) | Stage 1 | Bounded lock-free single-producer/single-consumer queue with raw storage |
 | `mini::move` / `mini::forward` | [`move.hpp`](include/mini/move.hpp), [`forward.hpp`](include/mini/forward.hpp) | Done | Hand-written reference-collapsing utilities |
 
 ## Building and testing
@@ -59,6 +60,7 @@ cmake --preset dev -DMINI_RING_DEQUE_STAGE=3
 | `MINI_SHARED_PTR_STAGE` | `9` |
 | `MINI_WEAK_PTR_STAGE` | `4` |
 | `MINI_FUNCTION_STAGE` | `2` |
+| `MINI_SPSC_QUEUE_STAGE` | `1` |
 | `MINI_FLAT_HASH_MAP_STAGE` | `0` (disabled) |
 | `MINI_HASH_MAP_STAGE` | `2` |
 | `MINI_STL_SANITIZERS` | `ON` |

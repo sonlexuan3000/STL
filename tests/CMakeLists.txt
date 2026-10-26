@@ -80,6 +80,13 @@ endif()
 mini_stl_add_test(function_tests function_tests.cpp
     STAGE_MACRO MINI_FUNCTION_STAGE STAGE ${MINI_FUNCTION_STAGE})
 
+mini_stl_add_test(spsc_queue_tests spsc_queue_tests.cpp
+    STAGE_MACRO MINI_SPSC_QUEUE_STAGE STAGE ${MINI_SPSC_QUEUE_STAGE})
+
+if(TARGET spsc_queue_tests)
+    target_link_libraries(spsc_queue_tests PRIVATE Threads::Threads)
+endif()
+
 mini_stl_add_test(flat_hash_map_tests flat_hash_map_tests.cpp
     STAGE_MACRO MINI_FLAT_HASH_MAP_STAGE STAGE ${MINI_FLAT_HASH_MAP_STAGE})
 
