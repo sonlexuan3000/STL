@@ -29,6 +29,7 @@ sequences checked against the `std` equivalent.
 | `mini::WeakPtr<T>` | [`weak_ptr.hpp`](include/mini/weak_ptr.hpp) | Stage 4 | Non-owning observation, converting views, and atomic promotion — [spec](docs/weak_ptr.md) |
 | `mini::Function<R(Args...)>` | [`function.hpp`](include/mini/function.hpp) | Stage 2 | Heap-backed callable type erasure with copy/move value semantics — [spec](docs/function.md) |
 | `mini::SpscQueue<T, Capacity>` | [`spsc_queue.hpp`](include/mini/spsc_queue.hpp) | Stage 2 | Bounded lock-free SPSC queue with raw storage, cached foreign indices, and false-sharing protection |
+| Mini type traits | [`type_traits.hpp`](include/mini/type_traits.hpp) | Stage 3 | Compile-time values, predicates, transformations, and SFINAE building blocks — [spec](docs/type_traits.md) |
 | `mini::move` / `mini::forward` | [`move.hpp`](include/mini/move.hpp), [`forward.hpp`](include/mini/forward.hpp) | Done | Hand-written reference-collapsing utilities |
 
 ## Building and testing
@@ -77,6 +78,7 @@ cmake --preset dev -DMINI_RING_DEQUE_STAGE=3
 | `MINI_WEAK_PTR_STAGE` | `4` |
 | `MINI_FUNCTION_STAGE` | `2` |
 | `MINI_SPSC_QUEUE_STAGE` | `2` |
+| `MINI_TYPE_TRAITS_STAGE` | `3` |
 | `MINI_FLAT_HASH_MAP_STAGE` | `0` (disabled) |
 | `MINI_HASH_MAP_STAGE` | `2` |
 | `MINI_STL_SANITIZERS` | `ON` |
