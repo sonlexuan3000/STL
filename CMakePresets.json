@@ -21,11 +21,36 @@
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "MINI_STL_SANITIZERS": "OFF"
       }
+    },
+    {
+      "name": "tsan",
+      "displayName": "Debug + ThreadSanitizer",
+      "binaryDir": "${sourceDir}/build/tsan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "MINI_STL_SANITIZERS": "OFF",
+        "MINI_STL_THREAD_SANITIZER": "ON"
+      }
+    },
+    {
+      "name": "benchmark",
+      "displayName": "Release SPSC benchmark",
+      "binaryDir": "${sourceDir}/build/benchmark",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "MINI_STL_BUILD_TESTS": "OFF",
+        "MINI_STL_BUILD_BENCHMARKS": "ON",
+        "MINI_STL_SANITIZERS": "OFF",
+        "MINI_STL_THREAD_SANITIZER": "OFF"
+      }
     }
   ],
   "buildPresets": [
     { "name": "dev", "configurePreset": "dev" },
-    { "name": "release", "configurePreset": "release" }
+    { "name": "release", "configurePreset": "release" },
+    { "name": "tsan", "configurePreset": "tsan" },
+    { "name": "benchmark", "configurePreset": "benchmark" }
   ],
   "testPresets": [
     {
@@ -36,6 +61,11 @@
     {
       "name": "release",
       "configurePreset": "release",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "tsan",
+      "configurePreset": "tsan",
       "output": { "outputOnFailure": true }
     }
   ]

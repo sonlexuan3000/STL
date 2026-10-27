@@ -17,8 +17,15 @@ target_compile_features(mini_stl INTERFACE cxx_std_20)
 # Options -----------------------------------------------------------------------
 
 option(MINI_STL_BUILD_TESTS "Build the test suite" ${PROJECT_IS_TOP_LEVEL})
+option(MINI_STL_BUILD_BENCHMARKS "Build performance benchmarks" OFF)
 option(MINI_STL_SANITIZERS "Build tests with AddressSanitizer and UBSan" ON)
+option(MINI_STL_THREAD_SANITIZER "Build tests with ThreadSanitizer" OFF)
 option(MINI_STL_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+
+if(MINI_STL_SANITIZERS AND MINI_STL_THREAD_SANITIZER)
+    message(FATAL_ERROR
+        "AddressSanitizer/UBSan and ThreadSanitizer must use separate builds")
+endif()
 
 # Each container is built in checkpoints (see docs/). The test suite only
 # enables the checkpoints up to the stage selected here; 0 disables the test.
@@ -28,12 +35,19 @@ set(MINI_PRIORITY_QUEUE_STAGE 3 CACHE STRING "Highest mini::PriorityQueue test s
 set(MINI_SHARED_PTR_STAGE    9 CACHE STRING "Highest mini::SharedPtr test stage to build (0-9)")
 set(MINI_WEAK_PTR_STAGE      4 CACHE STRING "Highest mini::WeakPtr test stage to build (0-4)")
 set(MINI_FUNCTION_STAGE      2 CACHE STRING "Highest mini::Function test stage to build (0-4)")
-set(MINI_SPSC_QUEUE_STAGE    1 CACHE STRING "Highest mini::SpscQueue test stage to build (0-1)")
+set(MINI_SPSC_QUEUE_STAGE    2 CACHE STRING "Highest mini::SpscQueue test stage to build (0-2)")
 set(MINI_FLAT_HASH_MAP_STAGE 0 CACHE STRING "Highest mini::FlatHashMap test stage to build (0-3)")
 set(MINI_HASH_MAP_STAGE      2 CACHE STRING "Highest mini::HashMap test stage to build (0-2)")
 
-if(MINI_STL_BUILD_TESTS)
+if(MINI_STL_BUILD_TESTS OR MINI_STL_BUILD_BENCHMARKS)
     find_package(Threads REQUIRED)
+endif()
+
+if(MINI_STL_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+if(MINI_STL_BUILD_BENCHMARKS)
+    add_subdirectory(benchmarks)
 endif()

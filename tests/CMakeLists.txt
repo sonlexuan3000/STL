@@ -9,7 +9,12 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
         target_compile_options(mini_stl_test_options INTERFACE -Werror)
     endif()
 
-    if(MINI_STL_SANITIZERS)
+    if(MINI_STL_THREAD_SANITIZER)
+        target_compile_options(mini_stl_test_options INTERFACE
+            -fsanitize=thread -fno-omit-frame-pointer)
+        target_link_options(mini_stl_test_options INTERFACE
+            -fsanitize=thread)
+    elseif(MINI_STL_SANITIZERS)
         target_compile_options(mini_stl_test_options INTERFACE
             -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all)
         target_link_options(mini_stl_test_options INTERFACE

@@ -12,11 +12,11 @@
 #include <utility>
 
 #ifndef MINI_SPSC_QUEUE_STAGE
-#define MINI_SPSC_QUEUE_STAGE 1
+#define MINI_SPSC_QUEUE_STAGE 2
 #endif
 
-static_assert(MINI_SPSC_QUEUE_STAGE == 1,
-              "MINI_SPSC_QUEUE_STAGE must be 1");
+static_assert(MINI_SPSC_QUEUE_STAGE >= 1 && MINI_SPSC_QUEUE_STAGE <= 2,
+              "MINI_SPSC_QUEUE_STAGE must be between 1 and 2");
 
 #define CHECK(condition)                                                      \
     do {                                                                      \
