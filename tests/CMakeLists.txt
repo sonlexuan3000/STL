@@ -95,6 +95,12 @@ endif()
 mini_stl_add_test(type_traits_tests type_traits_tests.cpp
     STAGE_MACRO MINI_TYPE_TRAITS_STAGE STAGE ${MINI_TYPE_TRAITS_STAGE})
 
+mini_stl_add_test(tuple_tests tuple_tests.cpp
+    STAGE_MACRO MINI_TUPLE_STAGE STAGE ${MINI_TUPLE_STAGE})
+
+mini_stl_add_test(variant_tests variant_tests.cpp
+    STAGE_MACRO MINI_VARIANT_STAGE STAGE ${MINI_VARIANT_STAGE})
+
 mini_stl_add_test(flat_hash_map_tests flat_hash_map_tests.cpp
     STAGE_MACRO MINI_FLAT_HASH_MAP_STAGE STAGE ${MINI_FLAT_HASH_MAP_STAGE})
 

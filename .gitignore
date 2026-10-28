@@ -16,3 +16,6 @@ compile_commands.json
 .idea/
 *.dSYM/
 .DS_Store
+
+# Private study notes
+roadmap/

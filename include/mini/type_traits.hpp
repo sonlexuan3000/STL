@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cstddef>
+#include <concepts>
+#include <utility>
+
 namespace mini {
 
 // Stage 1: compile-time values and predicates ---------------------------------
@@ -148,5 +152,53 @@ struct enable_if<true, T> {
 
 template <bool Condition, class T = void>
 using enable_if_t = typename enable_if<Condition, T>::type;
+
+// Stage 4: detecting valid expressions ----------------------------------------
+//
+// Write these yourself below (an alias template cannot be declared without a
+// definition, so there are no declarations to fill in). For this stage only,
+// you may include <utility> for std::declval and <concepts> for
+// std::convertible_to. See docs/type_traits.md.
+//
+//   void_t<Ts...>                     alias for void
+//   has_size<T> / has_size_v<T>       detection idiom: `t.size()` is valid for
+//                                     a non-const lvalue `t` of type T
+//   is_equality_comparable<T> / _v    detection idiom: `a == b` is valid for
+//                                     const lvalues `a`, `b` of type T
+//   concept Sized<T>                  requires-expression: for a const T `t`,
+//                                     `t.size()` is convertible to std::size_t
+//   concept EqualityComparable<T>     requires-expression: for const T `a`, `b`,
+//                                     `a == b` is convertible to bool
+template <class...>
+using void_t = void;
+
+template <class T, class = void>
+struct has_size : false_type {};
+
+template <class T>
+struct has_size<T, void_t<decltype(std::declval<T&>().size())>> : true_type {};
+
+template <class T>
+inline constexpr bool has_size_v = has_size<T>::value;
+
+template <class T, class = void>
+struct is_equality_comparable : false_type {};
+
+template <class T>
+struct is_equality_comparable<
+    T, void_t<decltype(std::declval<const T&>() == std::declval<const T&>())>> : true_type {};
+
+template <class T>
+inline constexpr bool is_equality_comparable_v = is_equality_comparable<T>::value;
+
+template <class T>
+concept EqualityComparable = requires(const T& a, const T& b) {
+    { a == b } -> std::convertible_to<bool>;
+};
+
+template <class T>
+concept Sized = requires(const T& value) {
+    { value.size() } -> std::convertible_to<std::size_t>;
+};
 
 } // namespace mini

@@ -2,8 +2,6 @@
 
 #include <cstddef>
 #include <functional>
-#include <new>
-#include <utility>
 
 namespace mini {
 
