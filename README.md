@@ -31,7 +31,7 @@ sequences checked against the `std` equivalent.
 | `mini::SpscQueue<T, Capacity>` | [`spsc_queue.hpp`](include/mini/spsc_queue.hpp) | Stage 2 | Bounded lock-free SPSC queue with raw storage, cached foreign indices, and false-sharing protection |
 | Mini type traits | [`type_traits.hpp`](include/mini/type_traits.hpp) | Stage 4 | Compile-time values, predicates, transformations, SFINAE, and concepts — [spec](docs/type_traits.md) |
 | `mini::type_list` / `mini::Tuple<Ts...>` | [`type_list.hpp`](include/mini/type_list.hpp), [`tuple.hpp`](include/mini/tuple.hpp) | Stage 3 | Recursive type-list metafunctions, heterogeneous storage, `get<I>`/`get<T>`, structured bindings — [spec](docs/tuple.md) |
-| `mini::Variant<Ts...>` | [`variant.hpp`](include/mini/variant.hpp) | Not started | Tagged union with in-place storage, `get`/`get_if`, `emplace`, and table-driven `visit` — [spec](docs/variant.md) |
+| `mini::Variant<Ts...>` | [`variant.hpp`](include/mini/variant.hpp) | Stage 3 | Tagged union with in-place storage, `get`/`get_if`, `emplace`, and table-driven `visit` — [spec](docs/variant.md) |
 | `mini::move` / `mini::forward` | [`move.hpp`](include/mini/move.hpp), [`forward.hpp`](include/mini/forward.hpp) | Done | Hand-written reference-collapsing utilities |
 
 ## Building and testing
@@ -82,7 +82,7 @@ cmake --preset dev -DMINI_RING_DEQUE_STAGE=3
 | `MINI_SPSC_QUEUE_STAGE` | `2` |
 | `MINI_TYPE_TRAITS_STAGE` | `4` |
 | `MINI_TUPLE_STAGE` | `3` |
-| `MINI_VARIANT_STAGE` | `0` (disabled) |
+| `MINI_VARIANT_STAGE` | `3` |
 | `MINI_FLAT_HASH_MAP_STAGE` | `0` (disabled) |
 | `MINI_HASH_MAP_STAGE` | `2` |
 | `MINI_STL_SANITIZERS` | `ON` |

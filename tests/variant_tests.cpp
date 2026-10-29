@@ -104,6 +104,14 @@ struct NoDefault {
     int value;
 };
 
+struct ThrowingMove {
+    ThrowingMove() = default;
+    ThrowingMove(const ThrowingMove&) = default;
+    ThrowingMove& operator=(const ThrowingMove&) = default;
+    ThrowingMove(ThrowingMove&&) noexcept(false) {}
+    ThrowingMove& operator=(ThrowingMove&&) noexcept(false) { return *this; }
+};
+
 #if MINI_VARIANT_STAGE >= 1
 
 using Basic = mini::Variant<int, std::string, double>;
@@ -256,6 +264,8 @@ void stage_1() {
 
 static_assert(std::is_copy_constructible_v<Basic>);
 static_assert(std::is_nothrow_move_constructible_v<mini::Variant<int, std::string>>);
+static_assert(!std::is_nothrow_move_constructible_v<mini::Variant<int, ThrowingMove>>);
+static_assert(!std::is_nothrow_move_assignable_v<mini::Variant<int, ThrowingMove>>);
 
 void stage_2() {
     std::cout << "[stage 2] copy and move construction\n";
